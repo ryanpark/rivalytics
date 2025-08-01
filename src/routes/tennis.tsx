@@ -8,7 +8,7 @@ export const Route = createFileRoute("/tennis")({
 });
 
 interface TennisPlayer {
-  PlayerID: number;
+  PlayerId: number;
   FirstName: string;
   LastName: string;
 }
@@ -17,6 +17,11 @@ const MAX_PLAYERS_TO_SHOW = 8;
 
 function Tennis() {
   const [search, setSearch] = useState("");
+
+  const [selectedPlayers, setSelectedPlayers] = useState<{
+    first: TennisPlayer | null;
+    second: TennisPlayer | null;
+  }>({ first: null, second: null });
 
   const {
     isPending,
@@ -37,6 +42,18 @@ function Tennis() {
       player.LastName?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handlePlayerSelect = (player: TennisPlayer) => {
+    setSelectedPlayers((prev) => {
+      if (!prev.first) {
+        return { ...prev, first: player };
+      }
+      if (!prev.second && player.PlayerId !== prev.first.PlayerId) {
+        return { ...prev, second: player };
+      }
+      return prev; // No change if both are set or same player is clicked
+    });
+  };
+
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
@@ -47,7 +64,9 @@ function Tennis() {
           onChange={(e) => setSearch(e.target.value)}
           style={{ width: 200 }}
         />
-        <button>Clear Search</button>
+        <button onClick={() => setSelectedPlayers({ first: null, second: null })}>
+          Clear Search
+        </button>
       </div>
       {isPending ? (
         <div>Loading players...</div>
@@ -62,12 +81,19 @@ function Tennis() {
           {filteredPlayers
             ?.slice(0, MAX_PLAYERS_TO_SHOW)
             ?.map((player: TennisPlayer) => (
-              <li key={player.PlayerID} className="py-1 border-b">
+              <li
+                key={player.PlayerId}
+                className="py-1 border-b"
+                onClick={() =>
+                  handlePlayerSelect(player)
+                }
+              >
                 {player.FirstName} {player.LastName}
               </li>
             ))}
         </ul>
       )}
+      <><div>{selectedPlayers.first?.FirstName} {selectedPlayers.first?.LastName}</div><div>{selectedPlayers.second?.FirstName} {selectedPlayers.second?.LastName}</div></>
     </div>
   );
 }
