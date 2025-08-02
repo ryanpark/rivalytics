@@ -2,15 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import API_ENDPOINTS from "../const/api";
 import { useState } from "react";
+import { Button } from "antd";
+import { analyzeHeadToHead } from "../actions/action";
 
 export const Route = createFileRoute("/tennis")({
   component: Tennis,
 });
 
 interface TennisPlayer {
-  PlayerId: number;
+  CommonName: string;
   FirstName: string;
   LastName: string;
+  PlayerId: number;
 }
 
 const MAX_PLAYERS_TO_SHOW = 8;
@@ -54,6 +57,8 @@ function Tennis() {
     });
   };
 
+  console.log(selectedPlayers);
+
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
@@ -68,6 +73,7 @@ function Tennis() {
           Clear Search
         </button>
       </div>
+      <div><Button type="primary" onClick={() => analyzeHeadToHead(selectedPlayers?.first?.CommonName || "", selectedPlayers?.second?.CommonName || "")}>Analyze Head-to-Head</Button></div>
       {isPending ? (
         <div>Loading players...</div>
       ) : error ? (
@@ -83,7 +89,7 @@ function Tennis() {
             ?.map((player: TennisPlayer) => (
               <li
                 key={player.PlayerId}
-                className="py-1 border-b"
+                className="py-1 border-b cursor-pointer"
                 onClick={() =>
                   handlePlayerSelect(player)
                 }
