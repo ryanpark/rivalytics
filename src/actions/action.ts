@@ -10,8 +10,7 @@ import OpenAI from "openai";
  */
 export async function analyzeHeadToHead(player1: string, player2: string) {
   const openai = new OpenAI({
-    apiKey:
-      import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.OPENAI_API_KEY,
+    apiKey: import.meta.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
   });
 
