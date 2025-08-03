@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import API_ENDPOINTS from "../const/api";
 import { useState } from "react";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import { analyzeHeadToHead } from "../actions/action";
 
 export const Route = createFileRoute("/tennis")({
@@ -57,23 +57,36 @@ function Tennis() {
     });
   };
 
-  console.log(selectedPlayers);
+  const startAnalyzeHeadToHead = async () => {
+    const response = await analyzeHeadToHead({
+      player1: selectedPlayers?.first?.CommonName || "",
+      player2: selectedPlayers?.second?.CommonName || "",
+    });
+    console.log(response);
+  };
 
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
       <div className="mb-4 flex gap-4">
-        <input
+        <Input
           placeholder="Search by first or last name"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ width: 200 }}
         />
-        <button onClick={() => setSelectedPlayers({ first: null, second: null })}>
+        <Button
+          type="link"
+          onClick={() => setSelectedPlayers({ first: null, second: null })}
+        >
           Clear Search
-        </button>
+        </Button>
       </div>
-      <div><Button type="primary" onClick={() => analyzeHeadToHead(selectedPlayers?.first?.CommonName || "", selectedPlayers?.second?.CommonName || "")}>Analyze Head-to-Head</Button></div>
+      <div>
+        <Button type="primary" onClick={() => startAnalyzeHeadToHead()}>
+          Analyze Head-to-Head
+        </Button>
+      </div>
       {isPending ? (
         <div>Loading players...</div>
       ) : error ? (
@@ -90,16 +103,21 @@ function Tennis() {
               <li
                 key={player.PlayerId}
                 className="py-1 border-b cursor-pointer"
-                onClick={() =>
-                  handlePlayerSelect(player)
-                }
+                onClick={() => handlePlayerSelect(player)}
               >
                 {player.FirstName} {player.LastName}
               </li>
             ))}
         </ul>
       )}
-      <><div>{selectedPlayers.first?.FirstName} {selectedPlayers.first?.LastName}</div><div>{selectedPlayers.second?.FirstName} {selectedPlayers.second?.LastName}</div></>
+      <>
+        <div>
+          {selectedPlayers.first?.FirstName} {selectedPlayers.first?.LastName}
+        </div>
+        <div>
+          {selectedPlayers.second?.FirstName} {selectedPlayers.second?.LastName}
+        </div>
+      </>
     </div>
   );
 }
