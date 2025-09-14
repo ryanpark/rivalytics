@@ -14,8 +14,9 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import type { TennisComparisonType } from "./TennisComparisonType";
 
-const TennisComparison = ({ data }) => {
+const TennisComparison = ({ data }: { data: TennisComparisonType }) => {
   const player1 = { name: data.players.player1.name };
   const player2 = { name: data.players.player2.name };
 
@@ -64,11 +65,6 @@ const TennisComparison = ({ data }) => {
       stat: "BP Saved %",
       [player1.name]: data?.key_statistics.player1?.break_points_saved_pct,
       [player2.name]: data?.key_statistics.player2?.break_points_saved_pct,
-    },
-    {
-      stat: "Top 10 Wins",
-      [player1.name]: data?.key_statistics.player1?.top10_wins_2024,
-      [player2.name]: data?.key_statistics.player2?.top10_wins_2024,
     },
   ];
 

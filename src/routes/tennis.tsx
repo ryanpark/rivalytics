@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button, Input } from "antd";
 import { analyzeHeadToHead } from "../actions/action";
 import TennisComparison from "../ui/TennisStats";
+import type { TennisComparisonType } from "../ui/TennisComparisonType";
 
 export const Route = createFileRoute("/tennis")({
   component: Tennis,
@@ -21,7 +22,8 @@ const MAX_PLAYERS_TO_SHOW = 8;
 
 function Tennis() {
   const [search, setSearch] = useState("");
-  const [headToHeadData, setHeadToHeadData] = useState<object | null>(null);
+  const [headToHeadData, setHeadToHeadData] =
+    useState<TennisComparisonType | null>(null);
   const [selectedPlayers, setSelectedPlayers] = useState<{
     first: TennisPlayer | null;
     second: TennisPlayer | null;
