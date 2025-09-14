@@ -4,6 +4,7 @@ import API_ENDPOINTS from "../const/api";
 import { useState } from "react";
 import { Button, Input } from "antd";
 import { analyzeHeadToHead } from "../actions/action";
+import TennisComparison from "../ui/TennisStats";
 
 export const Route = createFileRoute("/tennis")({
   component: Tennis,
@@ -20,7 +21,7 @@ const MAX_PLAYERS_TO_SHOW = 8;
 
 function Tennis() {
   const [search, setSearch] = useState("");
-
+  const [headToHeadData, setHeadToHeadData] = useState<object | null>(null);
   const [selectedPlayers, setSelectedPlayers] = useState<{
     first: TennisPlayer | null;
     second: TennisPlayer | null;
@@ -63,8 +64,10 @@ function Tennis() {
       player2: selectedPlayers?.second?.CommonName || "",
     });
     console.log(response);
+    setHeadToHeadData(JSON.parse(response));
   };
 
+  console.log(headToHeadData);
   return (
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
@@ -118,6 +121,7 @@ function Tennis() {
           {selectedPlayers.second?.FirstName} {selectedPlayers.second?.LastName}
         </div>
       </>
+      {headToHeadData && <TennisComparison data={headToHeadData} />}
     </div>
   );
 }

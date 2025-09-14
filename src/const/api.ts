@@ -1,7 +1,8 @@
 const API_ENDPOINTS = {
   tennis: {
-    players:
-      "https://api.sportsdata.io/v3/tennis/scores/json/Players?key=c93fdc00480d4df7a269049f618450d1",
+    players: `https://api.sportsdata.io/v3/tennis/scores/json/Players?key=${
+      import.meta.env.VITE_TENNIS_API_KEY
+    }`,
   },
   football: {
     teams: "https://api.sportsdata.io/v3/nfl/scores/json/Teams",
