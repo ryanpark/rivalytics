@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import API_ENDPOINTS from "../const/api";
 import { useState } from "react";
-import { Button, Input } from "antd";
+
 import { analyzeHeadToHead } from "../actions/action";
 import TennisComparison from "../ui/TennisStats";
 import type { TennisComparisonType } from "../ui/TennisComparisonType";
@@ -74,23 +74,23 @@ function Tennis() {
     <div className="p-2">
       <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
       <div className="mb-4 flex gap-4">
-        <Input
+        <input
           placeholder="Search by first or last name"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ width: 200 }}
         />
-        <Button
-          type="link"
+        <button
+          className="btn btn-neutral"
           onClick={() => setSelectedPlayers({ first: null, second: null })}
         >
           Clear Search
-        </Button>
+        </button>
       </div>
       <div>
-        <Button type="primary" onClick={() => startAnalyzeHeadToHead()}>
+        <button onClick={() => startAnalyzeHeadToHead()}>
           Analyze Head-to-Head
-        </Button>
+        </button>
       </div>
       {isPending ? (
         <div>Loading players...</div>

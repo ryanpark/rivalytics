@@ -2,3 +2,9 @@
 @plugin "daisyui" {
   themes: synthwave;
 }
+
+@theme {
+  --color-white: #efefef;
+  --font-display: "SF Pro Rounded", "San Francisco", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
