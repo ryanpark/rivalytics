@@ -2,10 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import API_ENDPOINTS from "../const/api";
 import { useState } from "react";
+import type { Key } from "react";
 
 import { analyzeHeadToHead } from "../actions/action";
 import TennisComparison from "../ui/TennisStats";
 import type { TennisComparisonType } from "../ui/TennisComparisonType";
+import { User, Target, Rocket } from "lucide-react";
+
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 
 export const Route = createFileRoute("/tennis")({
   component: Tennis,
@@ -16,18 +20,18 @@ interface TennisPlayer {
   FirstName: string;
   LastName: string;
   PlayerId: number;
+  key: string;
+  label: string;
 }
 
-const MAX_PLAYERS_TO_SHOW = 8;
-
 function Tennis() {
-  const [search, setSearch] = useState("");
   const [headToHeadData, setHeadToHeadData] =
     useState<TennisComparisonType | null>(null);
-  const [selectedPlayers, setSelectedPlayers] = useState<{
-    first: TennisPlayer | null;
-    second: TennisPlayer | null;
-  }>({ first: null, second: null });
+
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+
+  const [firstPlayer, setFirstPlayer] = useState("");
+  const [secondPlayer, setSecondPlayer] = useState("");
 
   const {
     isPending,
@@ -42,87 +46,176 @@ function Tennis() {
     },
   });
 
-  const filteredPlayers = players?.filter(
-    (player: TennisPlayer) =>
-      player.FirstName?.toLowerCase().includes(search.toLowerCase()) ||
-      player.LastName?.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handlePlayerSelect = (player: TennisPlayer) => {
-    setSelectedPlayers((prev) => {
-      if (!prev.first) {
-        return { ...prev, first: player };
-      }
-      if (!prev.second && player.PlayerId !== prev.first.PlayerId) {
-        return { ...prev, second: player };
-      }
-      return prev; // No change if both are set or same player is clicked
-    });
-  };
-
   const startAnalyzeHeadToHead = async () => {
-    const response = await analyzeHeadToHead({
-      player1: selectedPlayers?.first?.CommonName || "",
-      player2: selectedPlayers?.second?.CommonName || "",
-    });
-    console.log(response);
-    setHeadToHeadData(JSON.parse(response));
+    if (firstPlayer && secondPlayer) {
+      setIsAnalyzing(true);
+      try {
+        const response = await analyzeHeadToHead({
+          player1: firstPlayer || "",
+          player2: secondPlayer || "",
+        });
+
+        let normalizeData;
+        if (typeof response === "string") {
+          normalizeData = JSON.parse(response);
+        } else {
+          normalizeData = response;
+        }
+        setHeadToHeadData(normalizeData);
+      } catch (error) {
+        console.error("Error in head-to-head analysis:", error);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    }
   };
 
-  console.log(headToHeadData);
+  const playerData = players?.map((player: TennisPlayer) => ({
+    ...player,
+    key: `${player.FirstName} ${player.LastName}`,
+    label: `${player.FirstName} ${player.LastName}`,
+  }));
+
   return (
-    <div className="p-2">
-      <h1 className="text-2xl font-bold mb-4">Tennis Players</h1>
-      <div className="mb-4 flex gap-4">
-        <input
-          placeholder="Search by first or last name"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ width: 200 }}
-        />
-        <button
-          className="btn btn-neutral"
-          onClick={() => setSelectedPlayers({ first: null, second: null })}
-        >
-          Clear Search
-        </button>
-      </div>
+    <div className="flex flex-col items-center space-y-7 font-display  pt-5">
       <div>
-        <button onClick={() => startAnalyzeHeadToHead()}>
-          Analyze Head-to-Head
-        </button>
+        <img src="/rivalLogo.svg" alt="Rival Logo" />
       </div>
-      {isPending ? (
-        <div>Loading players...</div>
-      ) : error ? (
-        <div className="text-red-500">{error.message}</div>
-      ) : isFetching ? (
-        <div>Updating players...</div>
-      ) : filteredPlayers?.length === 0 ? (
-        <div>No players found.</div>
-      ) : (
-        <ul className="border-t">
-          {filteredPlayers
-            ?.slice(0, MAX_PLAYERS_TO_SHOW)
-            ?.map((player: TennisPlayer) => (
-              <li
-                key={player.PlayerId}
-                className="py-1 border-b cursor-pointer"
-                onClick={() => handlePlayerSelect(player)}
-              >
-                {player.FirstName} {player.LastName}
-              </li>
-            ))}
-        </ul>
-      )}
-      <>
-        <div>
-          {selectedPlayers.first?.FirstName} {selectedPlayers.first?.LastName}
+      <h3 className="text-3xl font-[100]">Compare Your Favorites</h3>
+      <h2 className="text-center text-white mb-20">
+        Select players or teams to analyze their head-to-head performance,{" "}
+        <br />
+        discover patterns, and uncover competitive insights.
+      </h2>
+      <div className="flex text-white">
+        <User className="mr-2" />
+        Player vs Player
+      </div>
+      <div className="md:min-w-xl">
+        <div className="border-1 rounded-sm w-full bg-[#A1B1FF]/20 p-5 border-[#A1B1FF] flex flex-col space-y-5">
+          <div className="flex">
+            <Target className="mr-2 text-primary" />
+            <h4 className="text-white font-bold">Player Comparison</h4>
+          </div>
+          {error && "Error : Failed to load players"}
+          <div className="flex justify-around">
+            <div>
+              <div className="pb-3 flex">
+                <User className="mr-2" />
+                Player 1
+              </div>
+              {isPending ||
+                (isFetching && (
+                  <>
+                    <span className="loading loading-spinner loading-xl"></span>{" "}
+                    Loading Players ...
+                  </>
+                ))}
+              {players && (
+                <Autocomplete
+                  defaultItems={playerData}
+                  placeholder="Search a Player"
+                  inputValue={firstPlayer ?? ""}
+                  onInputChange={setFirstPlayer}
+                  selectorIcon={false}
+                  clearIcon={false}
+                  onSelectionChange={(key: Key | null) => {
+                    if (key === null) {
+                      setFirstPlayer("");
+                      return;
+                    }
+                    setFirstPlayer(String(key));
+                  }}
+                  radius="md"
+                  className="input max-w-xs border-1 border-neutral bg-[#C7D2FE] text-gray-700"
+                >
+                  {(playerData: TennisPlayer) => (
+                    <AutocompleteItem
+                      key={playerData.key}
+                      className="bg-[#C7D2FE] text-gray-700 pl-5 pr-5 truncate"
+                    >
+                      {playerData.label}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              )}
+            </div>
+            <div className="flex items-center">
+              <img src="/bolt.png" className="mr-2" />
+              <img src="/VS.png" width="59" />
+            </div>
+            <div>
+              <div className="pb-3 flex">
+                <User className="mr-2" />
+                Player 2
+              </div>
+              {isPending ||
+                (isFetching && (
+                  <>
+                    <span className="loading loading-spinner loading-xl"></span>{" "}
+                    Loading Players ...
+                  </>
+                ))}
+              {players && (
+                <Autocomplete
+                  defaultItems={playerData}
+                  placeholder="Search a Player"
+                  inputValue={secondPlayer ?? ""}
+                  onInputChange={setSecondPlayer}
+                  selectorIcon={false}
+                  clearIcon={false}
+                  onSelectionChange={(key: Key | null) => {
+                    if (key === null) {
+                      setFirstPlayer("");
+                      return;
+                    }
+                    setFirstPlayer(String(key));
+                  }}
+                  radius="md"
+                  className="input border-1 border-neutral bg-[#C7D2FE] text-gray-700"
+                >
+                  {(playerData: TennisPlayer) => (
+                    <AutocompleteItem
+                      key={playerData.key}
+                      className="bg-[#C7D2FE] text-gray-700 pl-5 pr-5 truncate"
+                    >
+                      {playerData.label}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              )}
+            </div>
+          </div>
         </div>
-        <div>
-          {selectedPlayers.second?.FirstName} {selectedPlayers.second?.LastName}
+      </div>
+
+      <div className="p-2 mt-5">
+        <div className="mb-4 flex gap-4 justify-center align-middle">
+          <button
+            className="btn btn-primary btn-lg"
+            onClick={startAnalyzeHeadToHead}
+            disabled={!firstPlayer || !secondPlayer}
+          >
+            {isAnalyzing ? (
+              <span className="loading loading-spinner loading-xl"></span>
+            ) : (
+              <Rocket className="text-gray-900" />
+            )}
+            Analyze Head-to-Head
+          </button>
+          <a
+            className="link"
+            onClick={() => {
+              console.log(firstPlayer);
+              console.log(secondPlayer);
+              setFirstPlayer("");
+              setSecondPlayer("");
+            }}
+          >
+            Clear Search
+          </a>
         </div>
-      </>
+      </div>
       {headToHeadData && <TennisComparison data={headToHeadData} />}
     </div>
   );

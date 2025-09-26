@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="flex flex-col items-center space-y-7 font-display bg-[url(/wallb.png)]  bg-no-repeat  bg-[center_220px] pt-20">
+    <div className="flex flex-col items-center space-y-7 font-display pt-20">
       <div>
         <img src="/rivalLogo.svg" />
       </div>
@@ -23,13 +23,13 @@ function Index() {
         <button className="btn btn-neutral">
           <Link to="/tennis">🎾 Tennis</Link>
         </button>
-        <button className="btn btn-neutral disabled">
-          <Link to="/football">⚽ Football</Link>
+        <button className="btn btn-disabled">
+          <Link to="/">⚽ Football</Link>
         </button>
-        <button className="btn btn-neutral">
+        <button className="btn btn-disabled">
           <Link to="/cricket">🏏 Cricket</Link>
         </button>
-        <button className="btn btn-neutral">
+        <button className="btn btn-disabled">
           <Link to="/basketball">🏀 Basketball</Link>
         </button>
       </div>
@@ -45,7 +45,7 @@ function Index() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-4 sm:gap-5 min-w-[16rem] sm:min-w-2xl justify-center mx-4 sm:mx-10 md:mx-40 mb-8 sm:mb-30">
         <div className="border-1 rounded-sm bg-[#A1B1FF]/20 p-5  border-[#A1B1FF] flex flex-col space-y-5">
-          <ChartBar />
+          <ChartBar className="text-secondary" />
           <h4 className="text-xl">Advanced Analytics</h4>
           <p className="text-white">
             Deep statistical analysis with performance metrics, trends, and
@@ -53,7 +53,7 @@ function Index() {
           </p>
         </div>
         <div className="border-1 rounded-sm bg-[#A1B1FF]/20 p-5  border-[#A1B1FF] flex flex-col space-y-5">
-          <ChartLine />
+          <ChartLine className="text-secondary" />
           <h4 className="text-xl">Performance Tracking</h4>
           <p className="text-white">
             Track player and team performance over time with detailed charts and
@@ -61,8 +61,8 @@ function Index() {
           </p>
         </div>
         <div className="border-1 rounded-sm bg-[#A1B1FF]/20 p-5  border-[#A1B1FF] flex  lex flex-col space-y-5">
-          <User />
-          {/* <User /> */}
+          <User className="text-secondary" />
+
           <h4 className="text-xl">Head-to-Head Analysis</h4>
           <p className="text-white">
             Comprehensive rivalry analysis showing win-loss records, surface
@@ -70,7 +70,7 @@ function Index() {
           </p>
         </div>
         <div className="border-1 rounded-sm bg-[#A1B1FF]/20 p-5  border-[#A1B1FF] flex lex flex-col space-y-5">
-          <Trophy />
+          <Trophy className="text-secondary" />
           <h4 className="text-xl">Tournament Insights</h4>
           <p className="text-white">
             Analyze performance across different tournaments, surfaces, and

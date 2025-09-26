@@ -133,9 +133,14 @@ const TennisComparison = ({ data }: { data: TennisComparisonType }) => {
           <div className="card-body">
             <h2 className="card-title">AI Insights</h2>
             <ul className="list-disc pl-5 space-y-2 text-sm">
-              {data.ai_insights.map((insight, index) => (
-                <li key={index}>{insight}</li>
-              ))}
+              {data?.ai_insights?.map((insight, index) => {
+                const [player, text] = Object.entries(insight)[0];
+                return (
+                  <li key={index}>
+                    <strong>{player}:</strong> {text}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

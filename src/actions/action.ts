@@ -113,12 +113,6 @@ export async function analyzeHeadToHead(req: {
 
   const { player1, player2 } = req;
 
-  //   if (!import.meta.env.OPENAI_API_KEY) {
-  //     throw new Error(
-  //       "OPENAI_API_KEY is not set in environment variables. Please ensure it's configured."
-  //     );
-  //   }
-
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4.1",
@@ -141,8 +135,7 @@ export async function analyzeHeadToHead(req: {
       ],
     });
     const result = response.choices[0].message.content || "{}";
-    console.log(result);
-    return result;
+    return JSON.parse(result);
   } catch (error) {
     console.error("Error analyzing head-to-head:", error);
     throw new Error("Failed to analyze head-to-head. Please try again.");
