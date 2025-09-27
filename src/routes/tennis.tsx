@@ -91,14 +91,20 @@ function Tennis() {
         <User className="mr-2" />
         Player vs Player
       </div>
-      <div className="md:min-w-xl">
+      <div className="md:max-w-xl w-full">
         <div className="border-1 rounded-sm w-full bg-[#A1B1FF]/20 p-5 border-[#A1B1FF] flex flex-col space-y-5">
           <div className="flex">
             <Target className="mr-2 text-primary" />
             <h4 className="text-white font-bold">Player Comparison</h4>
           </div>
+          {isFetching && (
+            <div className="flex">
+              <span className="loading loading-spinner loading-xl mr-3"></span>
+              Fetching Players...
+            </div>
+          )}
           {error && "Error : Failed to load players"}
-          <div className="flex justify-around">
+          <div className="flex flex-col md:flex-row justify-around items-center">
             <div>
               <div className="pb-3 flex">
                 <User className="mr-2" />

@@ -19,7 +19,7 @@ function Index() {
         insights across tennis, football, and more.
       </h2>
 
-      <div className="navbar shadow-smflex flex items-center justify-center space-x-4">
+      <div className=" shadow-smflex md:flex items-center justify-center space-x-4">
         <button className="btn btn-neutral">
           <Link to="/tennis">🎾 Tennis</Link>
         </button>
