@@ -172,10 +172,10 @@ function Tennis() {
                   clearIcon={false}
                   onSelectionChange={(key: Key | null) => {
                     if (key === null) {
-                      setFirstPlayer("");
+                      setSecondPlayer("");
                       return;
                     }
-                    setFirstPlayer(String(key));
+                    setSecondPlayer(String(key));
                   }}
                   radius="md"
                   className="input border-1 border-neutral bg-[#C7D2FE] text-gray-700"
