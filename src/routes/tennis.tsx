@@ -91,7 +91,7 @@ function Tennis() {
         <User className="mr-2" />
         Player vs Player
       </div>
-      <div className="md:max-w-xl w-full">
+      <div className="md:max-w-3xl w-full">
         <div className="border-1 rounded-sm w-full bg-[#A1B1FF]/20 p-5 border-[#A1B1FF] flex flex-col space-y-5">
           <div className="flex">
             <Target className="mr-2 text-primary" />
@@ -133,7 +133,7 @@ function Tennis() {
                     setFirstPlayer(String(key));
                   }}
                   radius="md"
-                  className="input max-w-xs border-1 border-neutral bg-[#C7D2FE] text-gray-700"
+                  className="input max-w-xs border-1 border-neutral bg-[#C7D2FE] text-gray-700 w-[300px]"
                 >
                   {(playerData: TennisPlayer) => (
                     <AutocompleteItem
@@ -146,7 +146,7 @@ function Tennis() {
                 </Autocomplete>
               )}
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center pt-5">
               <img src="/bolt.png" className="mr-2" />
               <img src="/VS.png" width="59" />
             </div>
@@ -178,7 +178,7 @@ function Tennis() {
                     setSecondPlayer(String(key));
                   }}
                   radius="md"
-                  className="input border-1 border-neutral bg-[#C7D2FE] text-gray-700"
+                  className="input border-1 border-neutral bg-[#C7D2FE] text-gray-700 w-[300px]"
                 >
                   {(playerData: TennisPlayer) => (
                     <AutocompleteItem
